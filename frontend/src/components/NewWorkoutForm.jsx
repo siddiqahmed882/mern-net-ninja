@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import useWorkoutsContext from '../hooks/useWorkoutsContext';
+import workoutActions from '../actions/workoutActions';
 
 function NewWorkoutForm() {
   const [formData, setFormData] = useState({
@@ -7,6 +9,8 @@ function NewWorkoutForm() {
     reps: 0,
   });
   const [error, setError] = useState(null);
+
+  const { dispatch } = useWorkoutsContext();
 
   /**
    * update the formData
@@ -42,6 +46,8 @@ function NewWorkoutForm() {
         const error = data.error || 'Failed to create a new workout';
         throw new Error(error);
       }
+
+      dispatch({ type: workoutActions.ADD_WORKOUT, payload: data.workout });
 
       setFormData({
         title: '',
