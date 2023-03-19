@@ -49,6 +49,19 @@ async function show(req, res) {
 async function create(req, res) {
   const { title, reps, load } = req.body;
 
+  let emptyFields = [];
+  if (title.length === 0) emptyFields.push('title');
+  if (reps == null || reps == undefined || isNaN(reps))
+    emptyFields.push('reps');
+  if (load == null || load == undefined || isNaN(load))
+    emptyFields.push('load');
+
+  if (emptyFields.length > 0) {
+    return res
+      .status(400)
+      .json({ error: 'Please fill in the fields properly', emptyFields });
+  }
+
   try {
     const workout = await Workout.create({ title, reps, load });
     return res.status(200).json({ workout: workout });
@@ -95,7 +108,7 @@ async function destroy(req, res) {
   }
 
   try {
-    const workout = await Workout.findOneAndDelete({ _id: id });
+    const workout = await Workout.findByIdAndDelete(id);
 
     console.log(workout);
 

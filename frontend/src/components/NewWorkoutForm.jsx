@@ -9,6 +9,7 @@ function NewWorkoutForm() {
     reps: 0,
   });
   const [error, setError] = useState(null);
+  const [emptyFields, setEmptyFields] = useState([]);
 
   const { dispatch } = useWorkoutsContext();
 
@@ -21,6 +22,8 @@ function NewWorkoutForm() {
       name = e.target.name,
       value = type === 'number' ? e.target.valueAsNumber : e.target.value;
 
+    setEmptyFields((prev) => prev.filter((field) => field !== name));
+
     return setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -31,22 +34,17 @@ function NewWorkoutForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch('http://127.0.0.1:4000/api/workouts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    const response = await fetch('http://127.0.0.1:4000/api/workouts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        const error = data.error || 'Failed to create a new workout';
-        throw new Error(error);
-      }
-
+    if (response.ok) {
       dispatch({ type: workoutActions.ADD_WORKOUT, payload: data.workout });
 
       setFormData({
@@ -57,11 +55,15 @@ function NewWorkoutForm() {
 
       setError(null);
 
+      setEmptyFields([]);
+
       alert('Workout created');
-    } catch (err) {
-      console.log(err.message);
-      setError(err.message);
+      return;
     }
+
+    const error = data.error || 'Failed to create a new workout';
+    setError(error);
+    setEmptyFields(data.emptyFields);
   };
 
   return (
@@ -75,6 +77,7 @@ function NewWorkoutForm() {
           id='title'
           value={formData['title']}
           onChange={handleChange}
+          className={emptyFields.includes('title') ? 'error' : ''}
         />
       </div>
       <div className='form-group'>
@@ -85,6 +88,7 @@ function NewWorkoutForm() {
           id='load'
           value={formData['load']}
           onChange={handleChange}
+          className={emptyFields.includes('load') ? 'error' : ''}
         />
       </div>
       <div className='form-group'>
@@ -95,6 +99,7 @@ function NewWorkoutForm() {
           id='reps'
           value={formData['reps']}
           onChange={handleChange}
+          className={emptyFields.includes('reps') ? 'error' : ''}
         />
       </div>
       <button type='submit'>Submit</button>

@@ -10,7 +10,7 @@ const workoutReducer = (state, action) => {
       return {
         ...state,
         workouts: state.workouts.filter(
-          (workout) => workout.id !== action.payload
+          (workout) => workout._id !== action.payload
         ),
       };
     default:

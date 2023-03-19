@@ -25,7 +25,7 @@ function Home() {
     return () => {
       abortController.abort();
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className='home'>

@@ -65,7 +65,7 @@ header a {
   color: #555;
 }
 
-.workout-details span {
+.workout-details .workout-delete {
   position: absolute;
   top: 20px;
   right: 20px;
@@ -74,6 +74,7 @@ header a {
   padding: 6px;
   border-radius: 50%;
   color: #333;
+  border: 0;
 }
 
 /* new workout form */
