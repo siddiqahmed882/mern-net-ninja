@@ -110,8 +110,6 @@ async function destroy(req, res) {
   try {
     const workout = await Workout.findByIdAndDelete(id);
 
-    console.log(workout);
-
     if (!workout) {
       return res.status(404).json({ error: 'Workout not  found' });
     }

@@ -24,6 +24,7 @@ const corsOptions = {
 
 // middleware for parsing json data from request
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // global middleware that writes to file
 app.use((req, res, next) => {
@@ -36,6 +37,7 @@ app.use(cors(corsOptions));
 
 // routes
 app.use('/api/workouts', require('./routes/WorkoutRoutes'));
+app.use('/api/users', require('./routes/UserRoutes'));
 
 // catch all route
 app.get('*', (req, res) => {
