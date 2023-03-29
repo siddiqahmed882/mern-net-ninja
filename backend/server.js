@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
 
 // load environment variables in process.env object
 require('dotenv').config();
@@ -26,9 +29,17 @@ const corsOptions = {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// global middleware that writes to file
-app.use((req, res, next) => {
-  console.log(`Request: ${req.method} | Path: ${req.url}`);
+// global middleware that writes every request to log file
+app.use((req, _, next) => {
+  // write to file in current working directory
+  const fileName = path.join(__dirname, 'log.csv');
+  const date = new Date();
+  const log = `${crypto.randomUUID()}, ${req.method}, ${req.url}, ${
+    req.origin
+  }, ${date.toLocaleDateString()}, ${date.toLocaleTimeString()}\n`;
+  fs.appendFile(fileName, log, (err) => {
+    if (err) console.error(err);
+  });
   next();
 });
 

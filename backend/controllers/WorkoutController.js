@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 
 /**
  * Get All Workouts
- * @param {Request} req
- * @param {Response} res
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
  */
 async function index(req, res) {
   try {
@@ -18,8 +18,8 @@ async function index(req, res) {
 
 /**
  * Get a single Workout
- * @param {Request} req
- * @param {Response} res
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
  */
 async function show(req, res) {
   const id = req.params.id;
@@ -43,28 +43,24 @@ async function show(req, res) {
 
 /**
  * Create a new Workout
- * @param {Request} req
- * @param {Response} res
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
  */
 async function create(req, res) {
   const { title, reps, load } = req.body;
 
   let emptyFields = [];
   if (title.length === 0) emptyFields.push('title');
-  if (reps == null || reps == undefined || isNaN(reps))
-    emptyFields.push('reps');
-  if (load == null || load == undefined || isNaN(load))
-    emptyFields.push('load');
+  if (reps == null || reps == undefined || isNaN(reps)) emptyFields.push('reps');
+  if (load == null || load == undefined || isNaN(load)) emptyFields.push('load');
 
   if (emptyFields.length > 0) {
-    return res
-      .status(400)
-      .json({ error: 'Please fill in the fields properly', emptyFields });
+    return res.status(400).json({ error: 'Please fill in the fields properly', emptyFields });
   }
 
   try {
     const workout = await Workout.create({ title, reps, load });
-    return res.status(200).json({ workout: workout });
+    return res.status(201).json({ workout: workout });
   } catch (err) {
     return res.status(400).json({ error: err.message });
   }
@@ -72,8 +68,8 @@ async function create(req, res) {
 
 /**
  * Update a Workout
- * @param {Request} req
- * @param {Response} res
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
  */
 async function update(req, res) {
   const id = req.params.id;
@@ -97,8 +93,8 @@ async function update(req, res) {
 
 /**
  * Delete a Workout
- * @param {Request} req
- * @param {Response} res
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
  */
 async function destroy(req, res) {
   const id = req.params.id;

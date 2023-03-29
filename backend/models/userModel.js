@@ -15,6 +15,11 @@ const userSchema = new Schema({
   },
 });
 
+/**
+ * @desc Static method to register user
+ * @param {string} email
+ * @param {string} password
+ */
 userSchema.statics.register = async function (email, password) {
   // check if user exists
   const userExists = await this.findOne({ email });
@@ -31,6 +36,28 @@ userSchema.statics.register = async function (email, password) {
 
   // create user
   const user = await this.create({ email, password: hashedPassword });
+
+  return user;
+};
+
+/**
+ *  @desc Static method to login user
+ * @param {string} email
+ * @param {string} password
+ */
+userSchema.statics.login = async function (email, password) {
+  // check if user exists
+  const user = await this.findOne({ email });
+
+  if (!user) {
+    throw Error('Incorrect user credentials');
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    throw Error('Incorrect user credentials');
+  }
 
   return user;
 };
