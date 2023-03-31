@@ -14,7 +14,7 @@ function NewWorkoutForm() {
   const { dispatch } = useWorkoutsContext();
 
   /**
-   * update the formData
+   * @desc update the formData
    * @param {import('react').ChangeEvent<HTMLInputElement>} e
    */
   const handleChange = (e) => {
@@ -28,7 +28,7 @@ function NewWorkoutForm() {
   };
 
   /**
-   *
+   * @desc submit the form
    * @param {import('react').FormEvent<HTMLFormElement>} e
    */
   const handleSubmit = async (e) => {
