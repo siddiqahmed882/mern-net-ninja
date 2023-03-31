@@ -1,4 +1,4 @@
-import authActions from '../actions/AuthActions';
+import authActions from '../actions/authActions';
 
 const authReducer = (state, action) => {
   switch (action.type) {

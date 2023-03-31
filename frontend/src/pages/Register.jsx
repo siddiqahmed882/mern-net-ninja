@@ -1,7 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useRegisterHook from '../hooks/useRegisterHook';
+import useAuthContext from '../hooks/useAuthContext';
 
 const Register = () => {
   const [formData, setformData] = useState({ email: '', password: '' });
+  const { isLoading, error, register } = useRegisterHook();
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   /**
    * @desc update the formData
@@ -18,7 +30,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    await register(formData);
   };
 
   return (
@@ -32,7 +44,8 @@ const Register = () => {
         <label htmlFor='password'>Password</label>
         <input type='password' name='password' id='password' value={formData['password']} onChange={handleChange} />
       </div>
-      <button>Register</button>
+      <button disabled={isLoading}>Register</button>
+      {error ? <p className='error'>{error}</p> : null}
     </form>
   );
 };
