@@ -3,6 +3,8 @@ const WorkoutController = require('../controllers/WorkoutController');
 
 const router = Router();
 
+router.use(require('../middleware/requireAuth'));
+
 router.get('/', WorkoutController.index);
 
 router.get('/:id', WorkoutController.show);

@@ -35,7 +35,7 @@ app.use((req, _, next) => {
   const fileName = path.join(__dirname, 'log.csv');
   const date = new Date();
   const log = `${crypto.randomUUID()}, ${req.method}, ${req.url}, ${
-    req.origin
+    req.headers.origin
   }, ${date.toLocaleDateString()}, ${date.toLocaleTimeString()}\n`;
   fs.appendFile(fileName, log, (err) => {
     if (err) console.error(err);
