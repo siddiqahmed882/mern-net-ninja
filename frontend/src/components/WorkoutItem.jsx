@@ -1,21 +1,21 @@
 import useWorkoutsContext from '../hooks/useWorkoutsContext';
 import workoutActions from '../actions/workoutActions';
+import useAuthContext from '../hooks/useAuthContext';
 
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 
 function WorkoutItem({ workout }) {
   const { dispatch } = useWorkoutsContext();
+  const { user } = useAuthContext();
 
   const handleDelete = async () => {
-    const response = await fetch(
-      `http://localhost:4000/api/workouts/${workout._id}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    const response = await fetch(`http://localhost:4000/api/workouts/${workout._id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
+      },
+    });
     if (response.ok) {
       dispatch({ type: workoutActions.DELETE_WORKOUT, payload: workout._id });
       return;
@@ -34,9 +34,7 @@ function WorkoutItem({ workout }) {
         <strong>Reps: </strong>
         {workout.reps}
       </p>
-      <p>
-        {formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}
-      </p>
+      <p>{formatDistanceToNow(new Date(workout.createdAt), { addSuffix: true })}</p>
       <button onClick={handleDelete} className='workout-delete'>
         <span className='material-symbols-outlined'>delete</span>
       </button>

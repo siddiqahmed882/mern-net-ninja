@@ -9,8 +9,8 @@ import WorkoutsContextProvider from '../context/WorkoutsContext';
 function Layout() {
   return (
     <AuthContextProvider>
-      <Navbar />
       <WorkoutsContextProvider>
+        <Navbar />
         <div className='pages'>
           <Outlet />
         </div>

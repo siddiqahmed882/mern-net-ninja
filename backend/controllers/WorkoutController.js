@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 async function index(req, res) {
   try {
     // get workouts in descending order
-    const workouts = await Workout.find({}).sort({ createdAt: -1 });
+    const workouts = await Workout.find({ userId: req.user }).sort({ createdAt: -1 });
     return res.status(200).json({ workouts });
   } catch (err) {
     return res.status(400).json({ error: err.message });
@@ -29,11 +29,13 @@ async function show(req, res) {
   }
 
   try {
-    const workout = await Workout.findById(id);
+    const workout = await Workout.findbyId(id);
 
     if (!workout) {
       return res.status(404).json({ error: 'Workout not  found' });
     }
+
+    if (workout.userId !== req.user) return res.status(401).json({ error: 'Unauthorized' });
 
     return res.status(200).json({ workout });
   } catch (err) {
@@ -59,7 +61,7 @@ async function create(req, res) {
   }
 
   try {
-    const workout = await Workout.create({ title, reps, load });
+    const workout = await Workout.create({ title, reps, load, userId: req.user });
     return res.status(201).json({ workout: workout });
   } catch (err) {
     return res.status(400).json({ error: err.message });
@@ -79,11 +81,19 @@ async function update(req, res) {
   }
 
   try {
-    const workout = await Workout.findByIdAndUpdate(id, { ...req.body });
+    const workout = await Workout.findById(id);
 
     if (!workout) {
       return res.status(404).json({ error: 'Workout not  found' });
     }
+
+    if (workout.userId !== req.user) return res.status(401).json({ error: 'Unauthorized' });
+
+    Object.keys(req.body).forEach((key) => {
+      workout[key] = req.body[key];
+    });
+
+    await workout.save();
 
     return res.status(200).json({ workout: { ...workout._doc, ...req.body } });
   } catch (err) {
@@ -104,11 +114,15 @@ async function destroy(req, res) {
   }
 
   try {
-    const workout = await Workout.findByIdAndDelete(id);
+    const workout = await Workout.findById(id);
 
     if (!workout) {
       return res.status(404).json({ error: 'Workout not  found' });
     }
+
+    if (workout.userId !== req.user) return res.status(401).json({ error: 'Unauthorized' });
+
+    await Workout.findByIdAndDelete(id);
 
     return res.sendStatus(204);
   } catch (err) {

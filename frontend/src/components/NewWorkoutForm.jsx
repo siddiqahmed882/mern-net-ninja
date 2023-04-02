@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import useWorkoutsContext from '../hooks/useWorkoutsContext';
+import useAuthContext from '../hooks/useAuthContext';
 import workoutActions from '../actions/workoutActions';
 
 function NewWorkoutForm() {
@@ -12,6 +13,7 @@ function NewWorkoutForm() {
   const [emptyFields, setEmptyFields] = useState([]);
 
   const { dispatch } = useWorkoutsContext();
+  const { user } = useAuthContext();
 
   /**
    * @desc update the formData
@@ -38,6 +40,7 @@ function NewWorkoutForm() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`,
       },
       body: JSON.stringify(formData),
     });

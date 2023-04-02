@@ -38,9 +38,13 @@ function Home() {
   return (
     <div className='home'>
       <div className='workouts'>
-        {workouts && Array.isArray(workouts) && workouts.length > 0
-          ? workouts.map((workout) => <WorkoutItem workout={workout} key={workout._id} />)
-          : null}
+        {workouts && Array.isArray(workouts) ? (
+          workouts.length > 0 ? (
+            workouts.map((workout) => <WorkoutItem workout={workout} key={workout._id} />)
+          ) : (
+            <p>No workouts yet. Add one!</p>
+          )
+        ) : null}
       </div>
       <NewWorkoutForm />
     </div>
